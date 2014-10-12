@@ -21,6 +21,7 @@ router.get('/welcome', function(req, res) {
         var db = req.db;
         db.User.findOne({username : req.session.username}, function(err, doc) {
             if (err) {
+                console.error(err);
                 res.redirect('/');
             } else {
                 res.render('welcome', {title : 'Welcome', username : doc.username, count : doc.count});
@@ -50,6 +51,7 @@ router.post('/signup', function(req, res) {
     user.password = password;
     user.save(function(err, doc) {
         if (err) {
+            console.error(err);
             // If it failed. return err
             if (err.name == 'ValidationError' && err.errors.username) {
                 res.json({"error_code": -1});
@@ -59,7 +61,6 @@ router.post('/signup', function(req, res) {
                 // name already existed
                 res.json({"error_code": -3});
             } else {
-                console.error(err);
                 res.end();
             }
         } else {
@@ -71,13 +72,24 @@ router.post('/signup', function(req, res) {
 
 router.post('/login', function(req, res) {
     var db = req.db;
-    db.User.findOne({username : req.body.username}, function(err, doc) {
+    db.User.findOne({username : req.body.username, password : req.body.password}, function(err, doc) {
         if (err) {
             console.error(err);
-            res.end();
+            res.json({"error_code" : -4});
+        } else if (!doc) {
+            console.log('no records');
+            res.json({"error_code" : -4});
         } else {
-            req.session.username = doc.username;
-            res.json({"user_name": doc.username, "login_count": doc.count});
+            doc.count++;
+            doc.save(function(err2, doc2) {
+                if (err2) {
+                    console.error(err2);
+                    res.end();
+                } else {
+                    req.session.username = doc2.username;
+                    res.json({"user_name": doc2.username, "login_count": doc2.count});
+                }
+            });
         }
     });
 });
