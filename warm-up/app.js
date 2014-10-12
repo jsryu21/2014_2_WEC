@@ -1,4 +1,5 @@
 var express = require('express');
+var session = require('express-session');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -21,7 +22,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 // http://blog.modulus.io/nodejs-and-express-sessions
-app.use(express.session({secret: 'lol'}));
+app.use(session({resave: true, saveUninitialized: true, secret: 'lolqoolol'}))
 app.use(express.static(path.join(__dirname, 'public')));
 
 // mongoose

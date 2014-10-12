@@ -11,7 +11,7 @@ router.get('/', function(req, res) {
 });
 
 router.get('/main', function(req, res) {
-    res.render('main', {});
+    res.render('main', { title: 'Main' });
 });
 
 router.get('/welcome', function(req, res) {
@@ -27,24 +27,35 @@ router.post('/signup', function(req, res) {
     var password = req.body.password;
 
     // Set our model
-    var model = db.get('UsersModel');
+    var user = new db.User();
 
     // Submit to the DB
-    model.insert({
-        "username" : username,
-        "password" : password,
-        "count" : 0
-    }, function(err, doc) {
+    user.username = username;
+    user.password = password;
+    user.save(function(err, doc) {
         if (err) {
             // If it failed. return err
-            res.send("There was a probelm adding the information to the database.");
+            if (err.name == 'ValidationError' && err.errors.username) {
+                res.json(JSON.stringify({"error_code": -1}));
+            } else if (err.name == 'ValidationError' && err.errors.password) {
+                res.json(JSON.stringify({"error_code": -2}));
+            } else if (err.name == 'MongoError' && err.code == 11000) {
+                // name already existed
+                res.json(JSON.stringify({"error_code": -3}));
+            } else {
+                res.json(JSON.stringify({"error_code": -5}));
+            }
         } else {
-            // If it worked, set the header so the address bar doesn't still say /adduser
-            res.location("userlist");
             // And forward to success page
-            res.redirect("userlist");
+            res.redirect('/welcome');
         }
     });
+});
+
+router.post('/login', function(req, res) {
+});
+
+router.post('/clearData', function(req, res) {
 });
 
 module.exports = router;
