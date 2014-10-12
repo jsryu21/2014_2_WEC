@@ -20,7 +20,29 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+// http://blog.modulus.io/nodejs-and-express-sessions
+app.use(express.session({secret: 'lol'}));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// mongoose
+var dbUrl = process.env.MONGOHQ_URL || 'mongodb://localhost:28888/warm-up';
+var mongoose = require('mongoose');
+var connection = mongoose.createConnection(dbUrl);
+connection.on('error', console.error.bind(console, 'connection error:'));
+connection.once('open', function() {
+    console.info('connected to database');
+});
+
+var models = require('./models');
+function db(req, res, next) {
+    req.db = {
+        User: connection.model('UsersModel', models.User)
+    };
+    return next();
+}
+
+// Make our db accessible to our router
+app.use(db);
 
 app.use('/', routes);
 app.use('/users', users);

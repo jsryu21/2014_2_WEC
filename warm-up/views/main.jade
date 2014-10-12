@@ -1,0 +1,9 @@
+extends layout
+
+block content
+    h1= title
+    form#formAddUser(name="adduser",method="post",action="/")
+        Username : input#inputUsername(type="text", placeholder="username", name="username")
+        Password : input#inputPassword(type="text", placeholder="password", name="password")
+        button#btnLogin(type="submit") Login
+        button#btnAddUser(type="submit") Add User
