@@ -15,7 +15,23 @@ router.get('/main', function(req, res) {
 });
 
 router.get('/welcome', function(req, res) {
-    res.render('welcome', { title: 'Welcome' });
+    if (!req.session.username) {
+        res.redirect('/');
+    } else {
+        var db = req.db;
+        db.User.findOne({username : req.session.username}, function(err, doc) {
+            if (err) {
+                res.redirect('/');
+            } else {
+                res.render('welcome', {title : 'Welcome', username : doc.username, count : doc.count});
+            }
+        });
+    }
+});
+
+router.get('/logout', function(req, res) {
+    req.session.destroy();
+    res.redirect('/');
 });
 
 router.post('/signup', function(req, res) {
@@ -42,14 +58,26 @@ router.post('/signup', function(req, res) {
             } else if (err.name == 'MongoError' && err.code == 11000) {
                 // name already existed
                 res.json({"error_code": -3});
+            } else {
+                console.error(err);
             }
         } else {
+            req.session.username = user.username;
             res.json({"user_name": user.username, "login_count": 1});
         }
     });
 });
 
 router.post('/login', function(req, res) {
+    var db = req.db;
+    db.User.findOne({username : req.body.username}, function(err, doc) {
+        if (err) {
+            console.error(err);
+        } else {
+            req.session.username = doc.username;
+            res.json({"user_name": doc.username, "login_count": doc.count});
+        }
+    });
 });
 
 router.post('/clearData', function(req, res) {

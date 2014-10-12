@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 var userSchema = new Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    count: { type: Number, default: 0 }
+    count: { type: Number, default: 1 }
 });
 
 // http://mongoosejs.com/docs/api.html#schematype_SchemaType-validate

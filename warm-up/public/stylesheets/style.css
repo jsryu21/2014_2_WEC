@@ -9,3 +9,7 @@ a {
 #inputMessageBox {
     width: 700px;
 }
+#textAreaWelcome {
+    width: 700px;
+    height: 200px;
+}

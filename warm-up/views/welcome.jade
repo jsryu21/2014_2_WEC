@@ -1,11 +1,10 @@
 extends layout
 
 block content
-    h1.
-        User List
-    ul
-        each user, i in userlist
-            li
-                a(href="")= user.username
-                a(href="")= user.password
-                a(href="")= user.count
+    h1= title
+    textArea#textAreaWelcome
+        | Welcome #{username}
+        | You have logged in #{count} times.
+    br
+    form#formLogout(method="get", action="/logout")
+        button#btnLogout(type="submit") Logout
