@@ -15,7 +15,7 @@ router.get('/main', function(req, res) {
 });
 
 router.get('/welcome', function(req, res) {
-    res.render('welcome', {});
+    res.render('welcome', { title: 'Welcome' });
 });
 
 router.post('/signup', function(req, res) {
@@ -42,12 +42,9 @@ router.post('/signup', function(req, res) {
             } else if (err.name == 'MongoError' && err.code == 11000) {
                 // name already existed
                 res.json({"error_code": -3});
-            } else {
-                res.json({"error_code": -5});
             }
         } else {
-            // And forward to success page
-            res.redirect('/welcome');
+            res.json({"user_name": user.username, "login_count": 1});
         }
     });
 });
