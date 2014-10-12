@@ -60,6 +60,7 @@ router.post('/signup', function(req, res) {
                 res.json({"error_code": -3});
             } else {
                 console.error(err);
+                res.end();
             }
         } else {
             req.session.username = user.username;
@@ -73,6 +74,7 @@ router.post('/login', function(req, res) {
     db.User.findOne({username : req.body.username}, function(err, doc) {
         if (err) {
             console.error(err);
+            res.end();
         } else {
             req.session.username = doc.username;
             res.json({"user_name": doc.username, "login_count": doc.count});
@@ -81,6 +83,15 @@ router.post('/login', function(req, res) {
 });
 
 router.post('/clearData', function(req, res) {
+    req.db.User.remove({}, function(err) {
+        if (err) {
+            console.error(err);
+            res.end();
+        } else {
+            console.log('clearData done');
+            res.end();
+        }
+    });
 });
 
 module.exports = router;
