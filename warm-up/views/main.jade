@@ -2,12 +2,13 @@ extends layout
 
 block content
     h1= title
-    form#formAddUser(name="adduser",method="post",action="/login")
+    input#inputMessageBox
+    form#formAddUser
         label Username :
-        input#inputUsername(type="text", placeholder="username", name="username")
+        input#inputUsername(type="text", placeholder="Username", name="username")
         br
         label Password : 
-        input#inputPassword(type="text", placeholder="password", name="password")
+        input#inputPassword(type="text", placeholder="Password", name="password")
         br
-        button#btnLogin(type="submit") Login
+        button#btnLogin(type="button") Login
         button#btnAddUser(type="button") Add User

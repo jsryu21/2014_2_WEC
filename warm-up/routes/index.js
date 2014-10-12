@@ -36,14 +36,14 @@ router.post('/signup', function(req, res) {
         if (err) {
             // If it failed. return err
             if (err.name == 'ValidationError' && err.errors.username) {
-                res.json(JSON.stringify({"error_code": -1}));
+                res.json({"error_code": -1});
             } else if (err.name == 'ValidationError' && err.errors.password) {
-                res.json(JSON.stringify({"error_code": -2}));
+                res.json({"error_code": -2});
             } else if (err.name == 'MongoError' && err.code == 11000) {
                 // name already existed
-                res.json(JSON.stringify({"error_code": -3}));
+                res.json({"error_code": -3});
             } else {
-                res.json(JSON.stringify({"error_code": -5}));
+                res.json({"error_code": -5});
             }
         } else {
             // And forward to success page
