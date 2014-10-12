@@ -26,7 +26,7 @@ app.use(session({resave: true, saveUninitialized: true, secret: 'lolqoolol'}))
 app.use(express.static(path.join(__dirname, 'public')));
 
 // mongoose
-var dbUrl = process.env.MONGOHQ_URL || 'mongodb://localhost:28888/warm-up';
+var dbUrl = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/2014_2_WEC';
 var mongoose = require('mongoose');
 var connection = mongoose.createConnection(dbUrl);
 connection.on('error', console.error.bind(console, 'connection error:'));
